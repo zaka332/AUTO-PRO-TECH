@@ -1,0 +1,49 @@
+rules_version = '2';
+
+// ============================================
+// قواعد أمان Firestore — متجر AutoProTech
+// مهم: استبدل ADMIN_EMAIL@EXAMPLE.COM ببريد المدير الفعلي
+// ثم نفّذ: firebase deploy --only firestore:rules
+// ============================================
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    function isAdmin() {
+      return request.auth != null
+        && request.auth.token.email == 'ADMIN_EMAIL@EXAMPLE.COM'
+        && request.auth.token.email_verified == true;
+    }
+
+    // المنتجات: قراءة عامة للجميع، الكتابة للمدير فقط
+    match /products/{productId} {
+      allow read: if true;
+      allow create, update, delete: if isAdmin();
+    }
+
+    // السيارات المعروضة للبيع: قراءة عامة، الكتابة للمدير فقط
+    match /cars/{carId} {
+      allow read: if true;
+      allow create, update, delete: if isAdmin();
+    }
+
+    // الطلبات: إنشاء متاح للزوار (عند إتمام الشراء)، الإدارة للمدير فقط
+    match /orders/{orderId} {
+      allow create: if request.resource.data.keys().hasAll(['items', 'total', 'customer', 'status', 'createdAt'])
+        && request.resource.data.items.size() > 0
+        && request.resource.data.total is number
+        && request.resource.data.total >= 0;
+      allow read, update, delete: if isAdmin();
+    }
+
+    // الإعدادات: قراءة عامة (رقم الهاتف، رسوم التوصيل...)، الكتابة للمدير
+    match /settings/{docId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    // أي شيء آخر: مرفوض
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}

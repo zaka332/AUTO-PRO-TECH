@@ -1,0 +1,21 @@
+# التبعيات
+node_modules/
+
+# ملفات البيئة (تحتوي مفاتيح Firebase — لا ترفعها أبداً)
+.env
+.env.local
+.env.*.local
+
+# مخرجات البناء
+dist/
+
+# Firebase
+.firebase/
+firebase-debug.log
+*-debug.log
+.firebaserc
+
+# النظام
+.DS_Store
+Thumbs.db
+*.local

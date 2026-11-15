@@ -1,0 +1,35 @@
+rules_version = '2';
+
+// ============================================
+// قواعد أمان Firebase Storage
+// مهم: استبدل ADMIN_EMAIL@EXAMPLE.COM ببريد المدير الفعلي
+// ثم نفّذ: firebase deploy --only storage
+// ============================================
+service firebase.storage {
+  match /b/{bucket}/o {
+
+    function isAdmin() {
+      return request.auth != null
+        && request.auth.token.email == 'ADMIN_EMAIL@EXAMPLE.COM';
+    }
+
+    // صور المنتجات والسيارات: عامة للقراءة، رفع/حذف للمدير فقط وبحجم معقول
+    match /products/{fileName} {
+      allow read: if true;
+      allow write: if isAdmin()
+        && request.resource.size < 5 * 1024 * 1024
+        && request.resource.contentType.matches('image/.*');
+    }
+
+    match /cars/{fileName} {
+      allow read: if true;
+      allow write: if isAdmin()
+        && request.resource.size < 5 * 1024 * 1024
+        && request.resource.contentType.matches('image/.*');
+    }
+
+    match /{allPaths=**} {
+      allow read, write: if false;
+    }
+  }
+}
