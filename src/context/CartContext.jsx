@@ -24,7 +24,6 @@ export function CartProvider({ children }) {
         image: product.image, brand: product.brand, model: product.model, qty,
       }]
     })
-    setOpen(true)
   }
 
   const remove = (id) => setItems((prev) => prev.filter((i) => i.id !== id))

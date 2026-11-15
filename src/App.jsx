@@ -4,6 +4,7 @@ import Header from './components/Header.jsx'
 import Footer from './components/Footer.jsx'
 import CartDrawer from './components/CartDrawer.jsx'
 import FloatingWhatsApp from './components/FloatingWhatsApp.jsx'
+import BackToTop from './components/BackToTop.jsx'
 import { initPixel, pixelTrack } from './lib/pixel.js'
 import { demoMode } from './lib/db.js'
 
@@ -77,6 +78,7 @@ export default function App() {
       <Footer />
       <CartDrawer />
       <FloatingWhatsApp />
+      <BackToTop />
     </>
   )
 }

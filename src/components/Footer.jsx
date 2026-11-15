@@ -61,7 +61,13 @@ export default function Footer() {
       </div>
       <div className="footer-bottom">
         <div className="container">
-          © {new Date().getFullYear()} {SITE.name} — جميع الحقوق محفوظة | صُنع بـ ❤️ في الجزائر
+          <div className="footer-badges">
+            <span className="footer-badge">💵 الدفع عند الاستلام</span>
+            <span className="footer-badge">🚚 توصيل 58 ولاية</span>
+            <span className="footer-badge">🛡️ ضمان مطابقة القطع</span>
+            <span className="footer-badge">🇫🇷 تخصص السيارات الفرنسية</span>
+          </div>
+          <div>© {new Date().getFullYear()} {SITE.name} — جميع الحقوق محفوظة | صُنع بـ ❤️ في الجزائر</div>
         </div>
       </div>
     </footer>

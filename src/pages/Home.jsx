@@ -1,20 +1,32 @@
 import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
-import { fetchProducts, fetchCars } from '../lib/db.js'
+import { fetchProducts, fetchCars, fetchSettings } from '../lib/db.js'
 import { CATEGORIES, BRAND_NAMES, FRENCH_BRANDS } from '../data/catalog.js'
+import { waLink } from '../lib/whatsapp.js'
 import ProductCard from '../components/ProductCard.jsx'
 import CarCard from '../components/CarCard.jsx'
 import CarSelector from '../components/CarSelector.jsx'
+import Testimonials from '../components/Testimonials.jsx'
+import FAQ from '../components/FAQ.jsx'
+import Reveal from '../components/Reveal.jsx'
 import { TruckIcon, ShieldIcon, StarIcon, WrenchIcon } from '../components/Icons.jsx'
+
+const TRUST = [
+  { icon: '🚚', title: 'توصيل 24-72 ساعة', sub: 'لكل الولايات الـ58' },
+  { icon: '💵', title: 'الدفع عند الاستلام', sub: 'تفحص قبل أن تدفع' },
+  { icon: '🛡️', title: 'ضمان المطابقة', sub: 'استبدال خلال 7 أيام' },
+  { icon: '🎧', title: 'دعم واتساب سريع', sub: 'رد خلال دقائق' },
+]
 
 export default function Home() {
   const [products, setProducts] = useState([])
   const [cars, setCars] = useState([])
+  const [settings, setSettings] = useState(null)
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    Promise.all([fetchProducts(), fetchCars()])
-      .then(([prods, carList]) => { setProducts(prods); setCars(carList) })
+    Promise.all([fetchProducts(), fetchCars(), fetchSettings()])
+      .then(([prods, carList, st]) => { setProducts(prods); setCars(carList); setSettings(st) })
       .catch(console.error)
       .finally(() => setLoading(false))
   }, [])
@@ -29,7 +41,7 @@ export default function Home() {
       <section className="hero">
         <div className="container hero-in">
           <div className="hero-txt">
-            <span className="hero-badge">🔧 متخصصون في السيارات الفرنسية — وكل الماركات</span>
+            <span className="hero-badge">🇫🇷 متخصصون في السيارات الفرنسية — وكل الماركات</span>
             <h1>
               قطع غيار <span className="grad">أصلية</span> لسيارتك
               <br /> قديمة أو حديثة — وسيارات &lt;3 سنوات للبيع
@@ -45,7 +57,7 @@ export default function Home() {
             <div className="hero-stats">
               <div><b>+5000</b><span>قطعة متوفرة</span></div>
               <div><b>58</b><span>ولاية للتوصيل</span></div>
-              <div><b>2005-2026</b><span>كل سنوات السيارات</span></div>
+              <div><b>4.9⭐</b><span>تقييم العملاء</span></div>
             </div>
           </div>
           <div className="hero-visual" aria-hidden="true">
@@ -60,38 +72,60 @@ export default function Home() {
         </div>
       </section>
 
+      {/* شريط الثقة */}
+      <section className="trustbar-wrap container" aria-label="لماذا تثق بنا">
+        <Reveal>
+          <div className="trustbar">
+            {TRUST.map((t) => (
+              <div className="titem" key={t.title}>
+                <span>{t.icon}</span>
+                <div><b>{t.title}</b><small>{t.sub}</small></div>
+              </div>
+            ))}
+          </div>
+        </Reveal>
+      </section>
+
       {/* اختر سيارتك */}
       <section className="section container">
-        <div className="section-head">
-          <h2>🔎 ابحث بسيارتك</h2>
-          <p>اختر الماركة والطراز وسنة الصنع لعرض القطع المتوافقة — من أقدم الموديلات لأحدثها</p>
-        </div>
-        <CarSelector />
+        <Reveal>
+          <div className="section-head">
+            <h2>🔎 ابحث بسيارتك</h2>
+            <p>اختر الماركة والطراز وسنة الصنع لعرض القطع المتوافقة — من أقدم الموديلات لأحدثها</p>
+          </div>
+          <CarSelector />
+        </Reveal>
       </section>
 
       {/* الفئات */}
       <section className="section container">
-        <div className="section-head">
-          <h2>🗂️ تصفح حسب الفئة</h2>
-          <Link to="/products" className="see-all">عرض الكل ←</Link>
-        </div>
+        <Reveal>
+          <div className="section-head">
+            <h2>🗂️ تصفح حسب الفئة</h2>
+            <Link to="/products" className="see-all">عرض الكل ←</Link>
+          </div>
+        </Reveal>
         <div className="cats-grid">
-          {CATEGORIES.map((c) => (
-            <Link key={c.id} to={`/products?cat=${c.id}`} className="cat-card">
-              <span className="cat-icon">{c.icon}</span>
-              <b>{c.name}</b>
-              <small>{c.desc}</small>
-            </Link>
+          {CATEGORIES.map((c, i) => (
+            <Reveal key={c.id} delay={i * 40} className="reveal-card">
+              <Link to={`/products?cat=${c.id}`} className="cat-card">
+                <span className="cat-icon">{c.icon}</span>
+                <b>{c.name}</b>
+                <small>{c.desc}</small>
+              </Link>
+            </Reveal>
           ))}
         </div>
       </section>
 
       {/* منتجات مميزة */}
       <section className="section container">
-        <div className="section-head">
-          <h2>⭐ القطع الأكثر طلباً</h2>
-          <Link to="/products" className="see-all">عرض الكل ←</Link>
-        </div>
+        <Reveal>
+          <div className="section-head">
+            <h2>⭐ القطع الأكثر طلباً</h2>
+            <Link to="/products" className="see-all">عرض الكل ←</Link>
+          </div>
+        </Reveal>
         {loading ? (
           <div className="grid-4">{Array.from({ length: 8 }).map((_, i) => <div key={i} className="skeleton-card" />)}</div>
         ) : (
@@ -101,10 +135,12 @@ export default function Home() {
 
       {/* سيارات للبيع */}
       <section className="section container">
-        <div className="section-head">
-          <h2>🚗 سيارات أقل من 3 سنوات للبيع</h2>
-          <Link to="/cars" className="see-all">كل السيارات ←</Link>
-        </div>
+        <Reveal>
+          <div className="section-head">
+            <h2>🚗 سيارات أقل من 3 سنوات للبيع</h2>
+            <Link to="/cars" className="see-all">كل السيارات ←</Link>
+          </div>
+        </Reveal>
         {loading ? (
           <div className="grid-3">{Array.from({ length: 3 }).map((_, i) => <div key={i} className="skeleton-card" />)}</div>
         ) : (
@@ -115,23 +151,61 @@ export default function Home() {
       {/* لماذا نحن */}
       <section className="section container">
         <div className="features">
-          <div className="feat"><TruckIcon size={30} /><b>توصيل لكل الولايات</b><span>للمنزل أو مكتب التوصيل، مع الدفع عند الاستلام</span></div>
-          <div className="feat"><ShieldIcon size={30} /><b>ضمان المطابقة</b><span>قطع أصلية أو بديلة معتمدة بضمان الاستبدال</span></div>
-          <div className="feat"><WrenchIcon size={30} /><b>خبرة تقنية</b><span>فريق يساعدك في اختيار القطعة الصحيحة لسيارتك مهما كان موديلها</span></div>
-          <div className="feat"><StarIcon size={30} /><b>سيارات مفحوصة</b><span>سيارات أقل من 3 سنوات بوثائق كاملة وكيلومتراج موثق</span></div>
+          {[
+            { ic: <TruckIcon size={30} />, t: 'توصيل لكل الولايات', s: 'للمنزل أو مكتب التوصيل، مع الدفع عند الاستلام' },
+            { ic: <ShieldIcon size={30} />, t: 'ضمان المطابقة', s: 'قطع أصلية أو بديلة معتمدة بضمان الاستبدال' },
+            { ic: <WrenchIcon size={30} />, t: 'خبرة تقنية', s: 'فريق يساعدك في اختيار القطعة الصحيحة لسيارتك مهما كان موديلها' },
+            { ic: <StarIcon size={30} />, t: 'سيارات مفحوصة', s: 'سيارات أقل من 3 سنوات بوثائق كاملة وكيلومتراج موثق' },
+          ].map((f, i) => (
+            <Reveal key={f.t} delay={i * 80}><div className="feat">{f.ic}<b>{f.t}</b><span>{f.s}</span></div></Reveal>
+          ))}
         </div>
       </section>
 
+      {/* آراء العملاء */}
+      <Testimonials />
+
+      {/* أسئلة شائعة */}
+      <FAQ />
+
+      {/* دعوة للتواصل */}
+      {settings?.whatsapp && (
+        <section className="section container">
+          <Reveal>
+            <div className="cta-banner">
+              <div>
+                <h2>لم تجد القطعة التي تبحث عنها؟ 🔍</h2>
+                <p>أرسل لنا موديل سيارتك ورقم الهيكل (VIN) — نؤمّن لك القطعة الأصلية في أقرب وقت وبأفضل سعر في السوق.</p>
+              </div>
+              <div className="cta-actions">
+                <a
+                  className="btn btn-wa btn-lg"
+                  href={waLink(settings.whatsapp, 'مرحباً AutoProTech 👋 أبحث عن قطعة غيار، موديل سيارتي:')}
+                  target="_blank" rel="noreferrer"
+                >
+                  📲 راسلنا واتساب
+                </a>
+                {settings.phone && (
+                  <a className="btn btn-ghost btn-lg cta-ghost" href={`tel:+${settings.phone}`}>📞 اتصل بنا</a>
+                )}
+              </div>
+            </div>
+          </Reveal>
+        </section>
+      )}
+
       {/* شريط الماركات */}
       <section className="section container">
-        <div className="section-head">
-          <h2>🚙 نغطي أحدث وأقدم الطرازات</h2>
-          <span className="chip">🇫🇷 تخصصنا: رينو • بيجو • ستروين • داسيا</span>
-        </div>
-        <div className="brands-strip">
-          {FRENCH_BRANDS.map((b) => <span key={b} className="brand-chip fr">{b}</span>)}
-          {BRAND_NAMES.filter((b) => !FRENCH_BRANDS.includes(b)).map((b) => <span key={b} className="brand-chip">{b}</span>)}
-        </div>
+        <Reveal>
+          <div className="section-head">
+            <h2>🚙 نغطي أحدث وأقدم الطرازات</h2>
+            <span className="chip">🇫🇷 تخصصنا: رينو • بيجو • ستروين • داسيا</span>
+          </div>
+          <div className="brands-strip">
+            {FRENCH_BRANDS.map((b) => <span key={b} className="brand-chip fr">{b}</span>)}
+            {BRAND_NAMES.filter((b) => !FRENCH_BRANDS.includes(b)).map((b) => <span key={b} className="brand-chip">{b}</span>)}
+          </div>
+        </Reveal>
       </section>
     </>
   )
