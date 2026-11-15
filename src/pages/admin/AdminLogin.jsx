@@ -34,7 +34,7 @@ export default function AdminLogin() {
   return (
     <div className="admin-login-page">
       <form className="card admin-login" onSubmit={submit}>
-        <div className="login-logo">⚙️</div>
+        <img src="/logo.png" alt="AutoProTech" className="admin-logo-img" />
         <h2>لوحة تحكم AutoProTech</h2>
         <p className="hint">الدخول مخصص لإدارة المتجر فقط</p>
 

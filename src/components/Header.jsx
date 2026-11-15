@@ -2,7 +2,6 @@ import { useState, useEffect } from 'react'
 import { Link, NavLink, useNavigate } from 'react-router-dom'
 import { useCart } from '../context/CartContext.jsx'
 import { fetchSettings } from '../lib/db.js'
-import { SITE } from '../config.js'
 import { CartIcon, SearchIcon, MenuIcon, XIcon, WhatsAppIcon } from './Icons.jsx'
 
 export default function Header() {
@@ -27,12 +26,8 @@ export default function Header() {
       )}
       <header className="header">
         <div className="container header-in">
-          <Link to="/" className="logo" aria-label="الرئيسية">
-            <span className="logo-badge">⚙️</span>
-            <span className="logo-txt">
-              <b>AUTO<i>PRO</i>TECH</b>
-              <small>{SITE.tagline}</small>
-            </span>
+          <Link to="/" className="logo" aria-label="AutoProTech — الرئيسية">
+            <img src="/logo.png" alt="AutoProTech — Diagnostic • Repair • Performance" className="logo-img" />
           </Link>
 
           <form className="search" onSubmit={search} role="search">

@@ -13,10 +13,9 @@ export default function Footer() {
     <footer className="footer">
       <div className="container footer-grid">
         <div>
-          <div className="logo footer-logo">
-            <span className="logo-badge">⚙️</span>
-            <span className="logo-txt"><b>AUTO<i>PRO</i>TECH</b></span>
-          </div>
+          <Link to="/" className="footer-logo">
+            <img src="/logo.png" alt="AutoProTech" className="logo-img" />
+          </Link>
           <p className="footer-desc">
             متجرك الموثوق لقطع غيار السيارات الأصلية — متخصصون في السيارات الفرنسية ونغطي كل الماركات القديمة والحديثة.
             أيضاً: سيارات أقل من 3 سنوات للبيع. توصيل لكل ولايات الوطن مع الدفع عند الاستلام.
