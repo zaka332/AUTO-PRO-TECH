@@ -2,9 +2,12 @@ import { useEffect, useMemo, useState } from 'react'
 import { useSearchParams, Link } from 'react-router-dom'
 import { fetchCars } from '../lib/db.js'
 import { BRAND_NAMES } from '../data/catalog.js'
+import { useLang } from '../i18n/index.jsx'
+import { brandDisplay } from '../i18n/catalog-i18n.js'
 import CarCard from '../components/CarCard.jsx'
 
 export default function Cars() {
+  const { t, lang } = useLang()
   const [params, setParams] = useSearchParams()
   const [cars, setCars] = useState([])
   const [loading, setLoading] = useState(true)
@@ -35,24 +38,24 @@ export default function Cars() {
   return (
     <div className="container section cars-page">
       <div className="cars-hero">
-        <h2>🚗 سيارات للبيع — أقل من 3 سنوات</h2>
-        <p>سيارات مفحوصة 100%، وثائق كاملة، كيلومتراج حقيقي موثق — المعاينة والاستفسار مباشرة عبر واتساب</p>
+        <h2>{t('cars.title')}</h2>
+        <p>{t('cars.sub')}</p>
       </div>
 
       <div className="cars-filter-bar">
-        <select value={brand} onChange={(e) => setParam('brand', e.target.value)} aria-label="ماركة السيارة">
-          <option value="">🚗 كل الماركات</option>
-          {BRAND_NAMES.map((b) => <option key={b} value={b}>{b}</option>)}
+        <select value={brand} onChange={(e) => setParam('brand', e.target.value)} aria-label="brand">
+          <option value="">{t('pp.allBrands')}</option>
+          {BRAND_NAMES.map((b) => <option key={b} value={b}>{brandDisplay(b, lang)}</option>)}
         </select>
-        <select value={sort} onChange={(e) => setParam('sort', e.target.value)} aria-label="ترتيب">
-          <option value="new">الأحدث أولاً</option>
-          <option value="price-asc">السعر: الأقل أولاً</option>
-          <option value="price-desc">السعر: الأعلى أولاً</option>
-          <option value="mileage">الأقل كيلومتراجاً</option>
+        <select value={sort} onChange={(e) => setParam('sort', e.target.value)} aria-label="sort">
+          <option value="new">{t('cars.sNew')}</option>
+          <option value="price-asc">{t('pp.sAsc')}</option>
+          <option value="price-desc">{t('pp.sDesc')}</option>
+          <option value="mileage">{t('cars.sKm')}</option>
         </select>
-        <span className="count-chip">{list.length} سيارة معروضة</span>
+        <span className="count-chip">{t('cars.counted', { n: list.length })}</span>
         {brand && (
-          <button className="btn btn-ghost btn-sm" onClick={() => setParam('brand', '')}>✖ إزالة الفلتر</button>
+          <button className="btn btn-ghost btn-sm" onClick={() => setParam('brand', '')}>✖</button>
         )}
       </div>
 
@@ -61,9 +64,9 @@ export default function Cars() {
       ) : list.length === 0 ? (
         <div className="empty-state">
           <span className="big">🚙</span>
-          <h3>لا توجد سيارات معروضة حالياً بهذه المعايير</h3>
-          <p>جاري تجهيز دفعات جديدة — أو راسلنا على واتساب وسنجد لك السيارة المناسبة!</p>
-          <Link to="/contact" className="btn btn-primary">اطلب سيارة بالمواصفات</Link>
+          <h3>{t('cars.emptyT')}</h3>
+          <p>{t('cars.emptyP')}</p>
+          <Link to="/contact" className="btn btn-primary">{t('cars.orderBtn')}</Link>
         </div>
       ) : (
         <div className="grid-3">{list.map((c) => <CarCard key={c.id} car={c} />)}</div>

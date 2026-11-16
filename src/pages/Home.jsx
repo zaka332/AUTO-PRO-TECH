@@ -2,6 +2,8 @@ import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { fetchProducts, fetchCars, fetchSettings } from '../lib/db.js'
 import { CATEGORIES, BRAND_NAMES, FRENCH_BRANDS } from '../data/catalog.js'
+import { useLang } from '../i18n/index.jsx'
+import { catName, catDesc, brandDisplay } from '../i18n/catalog-i18n.js'
 import { waLink } from '../lib/whatsapp.js'
 import ProductCard from '../components/ProductCard.jsx'
 import CarCard from '../components/CarCard.jsx'
@@ -11,14 +13,8 @@ import FAQ from '../components/FAQ.jsx'
 import Reveal from '../components/Reveal.jsx'
 import { TruckIcon, ShieldIcon, StarIcon, WrenchIcon } from '../components/Icons.jsx'
 
-const TRUST = [
-  { icon: '🚚', title: 'توصيل 24-72 ساعة', sub: 'لكل الولايات الـ58' },
-  { icon: '💵', title: 'الدفع عند الاستلام', sub: 'تفحص قبل أن تدفع' },
-  { icon: '🛡️', title: 'ضمان المطابقة', sub: 'استبدال خلال 7 أيام' },
-  { icon: '🎧', title: 'دعم واتساب سريع', sub: 'رد خلال دقائق' },
-]
-
 export default function Home() {
+  const { t, lang } = useLang()
   const [products, setProducts] = useState([])
   const [cars, setCars] = useState([])
   const [settings, setSettings] = useState(null)
@@ -41,45 +37,47 @@ export default function Home() {
       <section className="hero">
         <div className="container hero-in">
           <div className="hero-txt">
-            <span className="hero-badge">🇫🇷 متخصصون في السيارات الفرنسية — وكل الماركات</span>
+            <span className="hero-badge">{t('hero.badge')}</span>
             <h1>
-              قطع غيار <span className="grad">أصلية</span> لسيارتك
-              <br /> قديمة أو حديثة — وسيارات &lt;3 سنوات للبيع
+              {t('hero.pre')} <span className="grad">{t('hero.grad')}</span> {t('hero.post')}
+              <br /> {t('hero.line2')}
             </h1>
-            <p>
-              قطع غيار أصلية مضمونة المطابقة للسيارات الفرنسية (رينو، بيجو، ستروين، داسيا)
-              وكل الماركات الأخرى — من 2005 حتى 2026. كما نبيع سيارات أقل من 3 سنوات مفحوصة 100%.
-            </p>
+            <p>{t('hero.p')}</p>
             <div className="hero-cta">
-              <Link to="/products" className="btn btn-primary btn-lg">🛒 تصفح قطع الغيار</Link>
-              <Link to="/cars" className="btn btn-ghost btn-lg">🚗 سيارات للبيع</Link>
+              <Link to="/products" className="btn btn-primary btn-lg">{t('hero.cta1')}</Link>
+              <Link to="/cars" className="btn btn-ghost btn-lg">{t('hero.cta2')}</Link>
             </div>
             <div className="hero-stats">
-              <div><b>+5000</b><span>قطعة متوفرة</span></div>
-              <div><b>58</b><span>ولاية للتوصيل</span></div>
-              <div><b>4.9⭐</b><span>تقييم العملاء</span></div>
+              <div><b>+5000</b><span>{t('hero.s1l')}</span></div>
+              <div><b>58</b><span>{t('hero.s2l')}</span></div>
+              <div><b>4.9⭐</b><span>{t('hero.s3l')}</span></div>
             </div>
           </div>
           <div className="hero-visual" aria-hidden="true">
             <div className="hero-ring r1" />
             <div className="hero-ring r2" />
             <div className="hero-gear">⚙️</div>
-            <div className="hero-chip c1">🇫🇷 قطع فرنسية أصلية</div>
-            <div className="hero-chip c2">🛑 فرامل</div>
-            <div className="hero-chip c3">🚗 سيارات &lt;3 سنوات</div>
-            <div className="hero-chip c4">🛢️ زيوت</div>
+            <div className="hero-chip c1">🇫🇷 {lang === 'ar' ? 'قطع فرنسية أصلية' : lang === 'fr' ? "Pièces françaises d'origine" : 'Genuine French parts'}</div>
+            <div className="hero-chip c2">🛑 {catName('brakes', lang)}</div>
+            <div className="hero-chip c3">🚗 {lang === 'ar' ? 'سيارات <3 سنوات' : lang === 'fr' ? 'Voitures <3 ans' : 'Cars <3 years'}</div>
+            <div className="hero-chip c4">🛢️ {catName('oils', lang)}</div>
           </div>
         </div>
       </section>
 
       {/* شريط الثقة */}
-      <section className="trustbar-wrap container" aria-label="لماذا تثق بنا">
+      <section className="trustbar-wrap container" aria-label="trust">
         <Reveal>
           <div className="trustbar">
-            {TRUST.map((t) => (
-              <div className="titem" key={t.title}>
-                <span>{t.icon}</span>
-                <div><b>{t.title}</b><small>{t.sub}</small></div>
+            {[
+              ['🚚', t('trust.t1t'), t('trust.t1s')],
+              ['💵', t('trust.t2t'), t('trust.t2s')],
+              ['🛡️', t('trust.t3t'), t('trust.t3s')],
+              ['🎧', t('trust.t4t'), t('trust.t4s')],
+            ].map(([ic, ti, su]) => (
+              <div className="titem" key={ti}>
+                <span>{ic}</span>
+                <div><b>{ti}</b><small>{su}</small></div>
               </div>
             ))}
           </div>
@@ -90,8 +88,8 @@ export default function Home() {
       <section className="section container">
         <Reveal>
           <div className="section-head">
-            <h2>🔎 ابحث بسيارتك</h2>
-            <p>اختر الماركة والطراز وسنة الصنع لعرض القطع المتوافقة — من أقدم الموديلات لأحدثها</p>
+            <h2>{t('sec.find')}</h2>
+            <p>{t('sec.findSub')}</p>
           </div>
           <CarSelector />
         </Reveal>
@@ -101,8 +99,8 @@ export default function Home() {
       <section className="section container">
         <Reveal>
           <div className="section-head">
-            <h2>🗂️ تصفح حسب الفئة</h2>
-            <Link to="/products" className="see-all">عرض الكل ←</Link>
+            <h2>{t('sec.cats')}</h2>
+            <Link to="/products" className="see-all">{t('sec.seeAll')}</Link>
           </div>
         </Reveal>
         <div className="cats-grid">
@@ -110,8 +108,8 @@ export default function Home() {
             <Reveal key={c.id} delay={i * 40} className="reveal-card">
               <Link to={`/products?cat=${c.id}`} className="cat-card">
                 <span className="cat-icon">{c.icon}</span>
-                <b>{c.name}</b>
-                <small>{c.desc}</small>
+                <b>{catName(c.id, lang)}</b>
+                <small>{catDesc(c.id, lang)}</small>
               </Link>
             </Reveal>
           ))}
@@ -122,8 +120,8 @@ export default function Home() {
       <section className="section container">
         <Reveal>
           <div className="section-head">
-            <h2>⭐ القطع الأكثر طلباً</h2>
-            <Link to="/products" className="see-all">عرض الكل ←</Link>
+            <h2>{t('sec.best')}</h2>
+            <Link to="/products" className="see-all">{t('sec.seeAll')}</Link>
           </div>
         </Reveal>
         {loading ? (
@@ -137,8 +135,8 @@ export default function Home() {
       <section className="section container">
         <Reveal>
           <div className="section-head">
-            <h2>🚗 سيارات أقل من 3 سنوات للبيع</h2>
-            <Link to="/cars" className="see-all">كل السيارات ←</Link>
+            <h2>{t('sec.cars')}</h2>
+            <Link to="/cars" className="see-all">{t('sec.allCars')}</Link>
           </div>
         </Reveal>
         {loading ? (
@@ -152,12 +150,12 @@ export default function Home() {
       <section className="section container">
         <div className="features">
           {[
-            { ic: <TruckIcon size={30} />, t: 'توصيل لكل الولايات', s: 'للمنزل أو مكتب التوصيل، مع الدفع عند الاستلام' },
-            { ic: <ShieldIcon size={30} />, t: 'ضمان المطابقة', s: 'قطع أصلية أو بديلة معتمدة بضمان الاستبدال' },
-            { ic: <WrenchIcon size={30} />, t: 'خبرة تقنية', s: 'فريق يساعدك في اختيار القطعة الصحيحة لسيارتك مهما كان موديلها' },
-            { ic: <StarIcon size={30} />, t: 'سيارات مفحوصة', s: 'سيارات أقل من 3 سنوات بوثائق كاملة وكيلومتراج موثق' },
+            { ic: <TruckIcon size={30} />, t: t('feat.f1t'), s: t('feat.f1s') },
+            { ic: <ShieldIcon size={30} />, t: t('feat.f2t'), s: t('feat.f2s') },
+            { ic: <WrenchIcon size={30} />, t: t('feat.f3t'), s: t('feat.f3s') },
+            { ic: <StarIcon size={30} />, t: t('feat.f4t'), s: t('feat.f4s') },
           ].map((f, i) => (
-            <Reveal key={f.t} delay={i * 80}><div className="feat">{f.ic}<b>{f.t}</b><span>{f.s}</span></div></Reveal>
+            <Reveal key={i} delay={i * 80}><div className="feat">{f.ic}<b>{f.t}</b><span>{f.s}</span></div></Reveal>
           ))}
         </div>
       </section>
@@ -174,19 +172,19 @@ export default function Home() {
           <Reveal>
             <div className="cta-banner">
               <div>
-                <h2>لم تجد القطعة التي تبحث عنها؟ 🔍</h2>
-                <p>أرسل لنا موديل سيارتك ورقم الهيكل (VIN) — نؤمّن لك القطعة الأصلية في أقرب وقت وبأفضل سعر في السوق.</p>
+                <h2>{t('cta.title')}</h2>
+                <p>{t('cta.p')}</p>
               </div>
               <div className="cta-actions">
                 <a
                   className="btn btn-wa btn-lg"
-                  href={waLink(settings.whatsapp, 'مرحباً AutoProTech 👋 أبحث عن قطعة غيار، موديل سيارتي:')}
+                  href={waLink(settings.whatsapp, t('float.waText'))}
                   target="_blank" rel="noreferrer"
                 >
-                  📲 راسلنا واتساب
+                  {t('cta.wa')}
                 </a>
                 {settings.phone && (
-                  <a className="btn btn-ghost btn-lg cta-ghost" href={`tel:+${settings.phone}`}>📞 اتصل بنا</a>
+                  <a className="btn btn-ghost btn-lg cta-ghost" href={`tel:+${settings.phone}`}>{t('cta.call')}</a>
                 )}
               </div>
             </div>
@@ -198,12 +196,12 @@ export default function Home() {
       <section className="section container">
         <Reveal>
           <div className="section-head">
-            <h2>🚙 نغطي أحدث وأقدم الطرازات</h2>
-            <span className="chip">🇫🇷 تخصصنا: رينو • بيجو • ستروين • داسيا</span>
+            <h2>{t('sec.brands')}</h2>
+            <span className="chip">{t('sec.brandsChip')}</span>
           </div>
           <div className="brands-strip">
-            {FRENCH_BRANDS.map((b) => <span key={b} className="brand-chip fr">{b}</span>)}
-            {BRAND_NAMES.filter((b) => !FRENCH_BRANDS.includes(b)).map((b) => <span key={b} className="brand-chip">{b}</span>)}
+            {FRENCH_BRANDS.map((b) => <span key={b} className="brand-chip fr">{brandDisplay(b, lang)}</span>)}
+            {BRAND_NAMES.filter((b) => !FRENCH_BRANDS.includes(b)).map((b) => <span key={b} className="brand-chip">{brandDisplay(b, lang)}</span>)}
           </div>
         </Reveal>
       </section>

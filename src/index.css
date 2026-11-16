@@ -900,6 +900,29 @@ input, select, textarea { font-family: inherit; }
 .car-specs .spec b { font-size: 14.5px; }
 .brand-chip.fr { border-color: #0891b288; color: #67e8f9; background: #0891b210; }
 
+/* ===== مبدّل اللغة ===== */
+.lang-sw {
+  display: flex; gap: 2px; background: var(--surface);
+  border: 1px solid var(--border); border-radius: 12px; padding: 3px;
+}
+.lang-sw button {
+  background: none; border: none; color: var(--muted);
+  font-weight: 800; font-size: 12.5px; padding: 6px 10px;
+  border-radius: 9px; transition: 0.2s; min-width: 36px;
+}
+.lang-sw button:hover { color: var(--txt); }
+.lang-sw button.active { background: var(--primary); color: #fff; box-shadow: 0 4px 12px rgba(249, 115, 22, 0.35); }
+
+/* ===== تصحيحات الاتجاه LTR (الفرنسية/الإنجليزية) ===== */
+[dir='ltr'] .search input {
+  border-radius: 0 12px 12px 0;
+  border-left: 1px solid var(--border); border-right: none;
+}
+[dir='ltr'] .search input:focus { border-color: var(--primary); border-right-color: var(--primary); }
+[dir='ltr'] .search button { border-radius: 12px 0 0 12px; }
+[dir='ltr'] .section-head h2::after { inset-inline-start: 0; }
+[dir='ltr'] .hero-gear { animation-name: spin; }
+
 /* ===== استجابة الشاشات ===== */
 @media (max-width: 1024px) {
   .hero-in { grid-template-columns: 1fr; }

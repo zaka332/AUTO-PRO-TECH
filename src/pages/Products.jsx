@@ -2,10 +2,12 @@ import { useEffect, useMemo, useState } from 'react'
 import { useSearchParams } from 'react-router-dom'
 import { fetchProducts, filterProducts } from '../lib/db.js'
 import { CATEGORIES, BRANDS, YEARS } from '../data/catalog.js'
+import { useLang } from '../i18n/index.jsx'
+import { catName, brandDisplay, modelDisplay } from '../i18n/catalog-i18n.js'
 import ProductCard from '../components/ProductCard.jsx'
-import { SearchIcon } from '../components/Icons.jsx'
 
 export default function Products() {
+  const { t, lang } = useLang()
   const [params, setParams] = useSearchParams()
   const [products, setProducts] = useState([])
   const [loading, setLoading] = useState(true)
@@ -37,57 +39,57 @@ export default function Products() {
     return l
   }, [products, cat, brand, model, year, q, sort])
 
-  const title = cat ? CATEGORIES.find((c) => c.id === cat)?.name
-    : brand ? `${brand}${model ? ' ' + model : ''}`
-    : q ? `نتائج البحث: ${q}`
-    : 'كل القطع'
+  const title = cat ? catName(cat, lang)
+    : brand ? `${brandDisplay(brand, lang)}${model ? ' ' + modelDisplay(model, lang) : ''}`
+    : q ? t('pp.results', { q })
+    : t('pp.allTitle')
 
   return (
     <div className="container section products-page">
       <div className="section-head">
-        <h2>🧰 {title} <span className="count-chip">{list.length} قطعة</span></h2>
+        <h2>🧰 {title} <span className="count-chip">{t('common.pieces', { n: list.length })}</span></h2>
       </div>
 
       <div className="products-layout">
         {/* المرشحات */}
         <aside className="filters">
           <div className="filter-box">
-            <h4>الفئة</h4>
+            <h4>{t('pp.fCat')}</h4>
             <div className="f-list">
-              <button className={!cat ? 'active' : ''} onClick={() => setParam('cat', '')}>الكل</button>
+              <button className={!cat ? 'active' : ''} onClick={() => setParam('cat', '')}>{t('common.all')}</button>
               {CATEGORIES.map((c) => (
                 <button key={c.id} className={cat === c.id ? 'active' : ''} onClick={() => setParam('cat', c.id)}>
-                  {c.icon} {c.name}
+                  {c.icon} {catName(c.id, lang)}
                 </button>
               ))}
             </div>
           </div>
 
           <div className="filter-box">
-            <h4>الماركة</h4>
+            <h4>{t('pp.fBrand')}</h4>
             <select value={brand} onChange={(e) => setParam('brand', e.target.value)}>
-              <option value="">كل الماركات</option>
-              {Object.keys(BRANDS).map((b) => <option key={b} value={b}>{b}</option>)}
+              <option value="">{t('pp.allBrands')}</option>
+              {Object.keys(BRANDS).map((b) => <option key={b} value={b}>{brandDisplay(b, lang)}</option>)}
             </select>
             {brand && (
               <select className="mt" value={model} onChange={(e) => setParam('model', e.target.value)}>
-                <option value="">كل الطرازات</option>
-                {BRANDS[brand].map((m) => <option key={m} value={m}>{m}</option>)}
+                <option value="">{t('pp.allModels')}</option>
+                {BRANDS[brand].map((m) => <option key={m} value={m}>{modelDisplay(m, lang)}</option>)}
               </select>
             )}
           </div>
 
           <div className="filter-box">
-            <h4>سنة الصنع</h4>
+            <h4>{t('pp.fYear')}</h4>
             <select value={year} onChange={(e) => setParam('year', e.target.value)}>
-              <option value="">كل السنوات (2005 – 2026)</option>
+              <option value="">{t('pp.allYears')}</option>
               {YEARS.map((y) => <option key={y} value={y}>{y}</option>)}
             </select>
           </div>
 
           {(cat || brand || model || year || q) && (
             <button className="btn btn-ghost w100" onClick={() => setParams(new URLSearchParams())}>
-              ✖ إزالة كل المرشحات
+              {t('pp.clear')}
             </button>
           )}
         </aside>
@@ -96,12 +98,12 @@ export default function Products() {
         <div>
           <div className="products-toolbar">
             <label className="sort">
-              ترتيب:
+              {t('pp.sort')}
               <select value={sort} onChange={(e) => setSort(e.target.value)}>
-                <option value="new">الأحدث</option>
-                <option value="price-asc">السعر: الأقل أولاً</option>
-                <option value="price-desc">السعر: الأعلى أولاً</option>
-                <option value="best">الأكثر مبيعاً</option>
+                <option value="new">{t('pp.sNew')}</option>
+                <option value="price-asc">{t('pp.sAsc')}</option>
+                <option value="price-desc">{t('pp.sDesc')}</option>
+                <option value="best">{t('pp.sBest')}</option>
               </select>
             </label>
           </div>
@@ -111,8 +113,8 @@ export default function Products() {
           ) : list.length === 0 ? (
             <div className="empty-state">
               <span className="big">🔍</span>
-              <h3>لا توجد نتائج مطابقة</h3>
-              <p>جرّب تغيير المرشحات أو تواصل معنا عبر واتساب — نؤمن لك القطعة!</p>
+              <h3>{t('pp.emptyT')}</h3>
+              <p>{t('pp.emptyP')}</p>
             </div>
           ) : (
             <div className="grid-3">{list.map((p) => <ProductCard key={p.id} product={p} />)}</div>

@@ -1,6 +1,6 @@
-export function fmtPrice(n) {
+export function fmtPrice(n, cur = 'دج') {
   if (n == null || isNaN(n)) return '—'
-  return Number(n).toLocaleString('en-US') + ' دج'
+  return Number(n).toLocaleString('en-US') + ' ' + cur
 }
 
 export function fmtDate(ts) {
