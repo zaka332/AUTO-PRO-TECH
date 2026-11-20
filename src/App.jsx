@@ -39,46 +39,61 @@ export default function App() {
 
   const isAdmin = location.pathname.startsWith('/admin')
 
+  const backdrop = (
+    <>
+      <div className="aurora" aria-hidden="true" />
+      <div className="blueprint" aria-hidden="true" />
+    </>
+  )
+
   if (isAdmin) {
     return (
-      <Routes>
-        <Route path="admin/login" element={<AdminLogin />} />
-        <Route path="admin" element={<AdminRoute><Dashboard /></AdminRoute>} />
-        <Route path="admin/products" element={<AdminRoute><AdminProducts /></AdminRoute>} />
-        <Route path="admin/cars" element={<AdminRoute><AdminCars /></AdminRoute>} />
-        <Route path="admin/orders" element={<AdminRoute><AdminOrders /></AdminRoute>} />
-        <Route path="admin/settings" element={<AdminRoute><AdminSettings /></AdminRoute>} />
-        <Route path="*" element={<NotFound />} />
-      </Routes>
+      <>
+        {backdrop}
+        <div className="app-shell">
+          <Routes>
+            <Route path="admin/login" element={<AdminLogin />} />
+            <Route path="admin" element={<AdminRoute><Dashboard /></AdminRoute>} />
+            <Route path="admin/products" element={<AdminRoute><AdminProducts /></AdminRoute>} />
+            <Route path="admin/cars" element={<AdminRoute><AdminCars /></AdminRoute>} />
+            <Route path="admin/orders" element={<AdminRoute><AdminOrders /></AdminRoute>} />
+            <Route path="admin/settings" element={<AdminRoute><AdminSettings /></AdminRoute>} />
+            <Route path="*" element={<NotFound />} />
+          </Routes>
+        </div>
+      </>
     )
   }
 
   return (
     <>
-      {demoMode && (
-        <div className="demo-top-banner" title="Firebase غير مضبوط — المتجر يعمل ببيانات تجريبية">
-          🧪 <b>وضع العرض التجريبي</b> — المتجر يعمل ببيانات تجريبية. اضبط Firebase من ملف .env لتفعيله بالكامل (الشرح في README)
-        </div>
-      )}
-      <Header />
-      <main>
-        <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/products" element={<Products />} />
-          <Route path="/product/:id" element={<ProductDetails />} />
-          <Route path="/cars" element={<Cars />} />
-          <Route path="/car/:id" element={<CarDetails />} />
-          <Route path="/checkout" element={<Checkout />} />
-          <Route path="/order/:id" element={<OrderSuccess />} />
-          <Route path="/about" element={<About />} />
-          <Route path="/contact" element={<Contact />} />
-          <Route path="*" element={<NotFound />} />
-        </Routes>
-      </main>
-      <Footer />
-      <CartDrawer />
-      <FloatingWhatsApp />
-      <BackToTop />
+      {backdrop}
+      <div className="app-shell">
+        {demoMode && (
+          <div className="demo-top-banner" title="Firebase غير مضبوط — المتجر يعمل ببيانات تجريبية">
+            🧪 <b>وضع العرض التجريبي</b> — المتجر يعمل ببيانات تجريبية. اضبط Firebase من ملف .env لتفعيله بالكامل (الشرح في README)
+          </div>
+        )}
+        <Header />
+        <main>
+          <Routes>
+            <Route path="/" element={<Home />} />
+            <Route path="/products" element={<Products />} />
+            <Route path="/product/:id" element={<ProductDetails />} />
+            <Route path="/cars" element={<Cars />} />
+            <Route path="/car/:id" element={<CarDetails />} />
+            <Route path="/checkout" element={<Checkout />} />
+            <Route path="/order/:id" element={<OrderSuccess />} />
+            <Route path="/about" element={<About />} />
+            <Route path="/contact" element={<Contact />} />
+            <Route path="*" element={<NotFound />} />
+          </Routes>
+        </main>
+        <Footer />
+        <CartDrawer />
+        <FloatingWhatsApp />
+        <BackToTop />
+      </div>
     </>
   )
 }

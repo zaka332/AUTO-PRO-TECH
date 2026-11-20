@@ -4,6 +4,7 @@ import { useCart } from '../context/CartContext.jsx'
 import { fetchSettings } from '../lib/db.js'
 import { useLang } from '../i18n/index.jsx'
 import LangSwitcher from './LangSwitcher.jsx'
+import AppearancePanel from './AppearancePanel.jsx'
 import { CartIcon, SearchIcon, MenuIcon, XIcon, WhatsAppIcon } from './Icons.jsx'
 
 export default function Header() {
@@ -58,6 +59,7 @@ export default function Header() {
 
           <div className="header-actions">
             <LangSwitcher />
+            <AppearancePanel />
             <button className="cart-btn" onClick={openCart} aria-label="cart">
               <CartIcon />
               {count > 0 && <span className="cart-count">{count}</span>}

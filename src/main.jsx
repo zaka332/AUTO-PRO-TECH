@@ -5,7 +5,11 @@ import App from './App.jsx'
 import { CartProvider } from './context/CartContext.jsx'
 import { ToastProvider } from './components/Toast.jsx'
 import { LangProvider } from './i18n/index.jsx'
+import { loadAppearance, applyAppearance } from './components/AppearancePanel.jsx'
 import './index.css'
+
+// تطبيق المظهر المحفوظ قبل الرسم (بدون وميض)
+applyAppearance(loadAppearance())
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
